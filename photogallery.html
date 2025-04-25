@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Photo Gallery</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f3f3f3;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .upload-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input[type="file"] {
+      margin: 10px;
+    }
+
+    .filters {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .filters button {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .filters button:hover {
+      background-color: #ddd;
+    }
+
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .gallery img {
+      max-width: 200px;
+      border-radius: 8px;
+      transition: transform 0.3s ease;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.05);
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Interactive Photo Gallery</h1>
+  <div class="upload-container">
+    <input type="file" id="upload" multiple accept="image/*">
+  </div>
+  <div class="filters">
+    <button onclick="applyFilter('all')">All</button>
+    <button onclick="applyFilter('grayscale')">Grayscale</button>
+    <button onclick="applyFilter('sepia')">Sepia</button>
+    <button onclick="applyFilter('invert')">Invert</button>
+  </div>
+  <div class="gallery" id="gallery"></div>
+
+  <script>
+    const gallery = document.getElementById('gallery');
+
+    document.getElementById('upload').addEventListener('change', function(event) {
+      const files = event.target.files;
+      gallery.innerHTML = '';
+      for (const file of files) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          img.setAttribute('data-filter', 'original');
+          gallery.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function applyFilter(filter) {
+      const images = gallery.querySelectorAll('img');
+      images.forEach(img => {
+        img.style.filter = '';
+        img.classList.remove('hidden');
+        if (filter === 'grayscale') {
+          img.style.filter = 'grayscale(100%)';
+          img.setAttribute('data-filter', 'grayscale');
+        } else if (filter === 'sepia') {
+          img.style.filter = 'sepia(100%)';
+          img.setAttribute('data-filter', 'sepia');
+        } else if (filter === 'invert') {
+          img.style.filter = 'invert(100%)';
+          img.setAttribute('data-filter', 'invert');
+        } else if (filter === 'all') {
+          img.setAttribute('data-filter', 'original');
+        } else {
+          img.classList.add('hidden');
+        }
+      });
+    }
+  </script>
+</body>
+</html>
